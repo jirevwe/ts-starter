@@ -6,7 +6,10 @@ import { Repository, Query, QueryResult, PaginationQuery } from '.';
 @injectable()
 export class BaseRepository<T> implements Repository<T> {
   protected model: Model<T>;
-  constructor(@unmanaged() private name: string, @unmanaged() schema: Schema) {
+  constructor(
+    @unmanaged() private name: string,
+    @unmanaged() schema: Schema<T>
+  ) {
     this.model = mongoose.model<T>(name, schema);
   }
 

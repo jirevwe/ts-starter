@@ -18,7 +18,6 @@ export class UserRepository
   implements IUserRepository
 {
   constructor() {
-    //@ts-ignore
     super('User', UserSchema);
   }
 
