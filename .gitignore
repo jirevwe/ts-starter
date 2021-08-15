@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.staging
+yarn-error.log
+.vscode
+settings.json
+.DS_Store
+/data
+/coverage
+logs.json
+.metals

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "commonjs",
+    "lib": ["ES2019", "DOM"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "paths": {
+      "@app/common/*": ["common/*"],
+      "@app/data/*": ["data/*"],
+      "@app/server/*": ["server/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./typings"],
+    "types": ["reflect-metadata", "jest"],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": ["src/**/*.spec.ts"],
+  "include": ["typings/**/*.d.ts", "src/**/*"]
+}

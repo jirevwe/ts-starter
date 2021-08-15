@@ -1,0 +1,1 @@
+# getequity-template
