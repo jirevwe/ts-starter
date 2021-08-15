@@ -1,6 +1,7 @@
 import axios from 'axios';
 import env from '@app/common/config/env';
 import { NameEnquiryDTO, NIPTransferOptions } from './nip.typings';
+import { injectable } from 'inversify';
 
 export interface INipService {
   getBanks(): Promise<any>;
@@ -11,6 +12,7 @@ export interface INipService {
 /**
  * The NIP service handles making REST API calls to some NIP service
  */
+@injectable()
 export class NipService implements INipService {
   private endpoint: string;
 

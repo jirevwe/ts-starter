@@ -1,4 +1,4 @@
 export const IOC_TYPES = {
-  AccountRepository: Symbol.for('AccountRepository'),
+  UserRepository: Symbol.for('UserRepository'),
   NipService: Symbol.for('NipService')
 };

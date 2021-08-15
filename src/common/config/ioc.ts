@@ -15,8 +15,6 @@ const container = new Container();
 
 container.bind<INipService>(IOC_TYPES.NipService).to(NipService);
 
-container
-  .bind<IUserRepository>(IOC_TYPES.AccountRepository)
-  .to(UserRepository);
+container.bind<IUserRepository>(IOC_TYPES.UserRepository).to(UserRepository);
 
 export default container;

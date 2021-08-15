@@ -21,7 +21,7 @@ import { BaseController } from './base';
 
 @controller('/users')
 export default class UserController extends BaseController {
-  @inject(IOC_TYPES.AccountRepository)
+  @inject(IOC_TYPES.UserRepository)
   userRepo: IUserRepository;
 
   /**
