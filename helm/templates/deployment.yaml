@@ -3,29 +3,27 @@ kind: Deployment
 metadata:
   name: {{ include "getequity-template.fullname" . }}
   labels:
-    {{- include "getequity-template.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "getequity-template.name" . }}
+    helm.sh/chart: {{ include "getequity-template.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "getequity-template.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "getequity-template.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "80"
+        updatedAt: {{ now | quote }}
       labels:
-        {{- include "getequity-template.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "getequity-template.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -36,19 +34,11 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
           env:
             - name: SERVICE_NAME
               value: {{ .Chart.Name }}
-            - name: NODE_ENV
-              value: {{ .Values.app.node_env }}
+            - name: APP_ENV
+              value: {{ .Values.app.app_env }}
             - name: PORT
               value: {{ .Values.app.port | quote }}
             {{- range $env := .Values.app.commonEnv }}
@@ -65,6 +55,16 @@ spec:
                   name: getequity-template
                   key: {{ $env }}
             {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

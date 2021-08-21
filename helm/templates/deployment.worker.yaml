@@ -8,22 +8,27 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.worker.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "getequity-template.name" . }}-worker
-      app.kubernetes.io/instance: {{ .Release.Name }}-worker
+      app.kubernetes.io/name: {{ include "getequity-template.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      labels:
-        app.kubernetes.io/name: {{ include "getequity-template.name" . }}-worker
-        app.kubernetes.io/instance: {{ .Release.Name }}-worker
       annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "80"
         updatedAt: {{ now | quote }}
+      labels:
+        app.kubernetes.io/name: {{ include "getequity-template.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ .Chart.Name }}-worker
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["yarn"]
           args: ["start:worker"]
@@ -36,22 +41,20 @@ spec:
               value: {{ .Chart.Name }}-worker
             - name: NODE_ENV
               value: {{ .Values.app.node_env }}
-            - name: PORT
-              value: {{ .Values.app.port | quote }}
             - name: WORKER_PORT
               value: {{ .Values.worker.port | quote }}
             {{- range $env := .Values.app.commonEnv }}
             - name: {{ $env | upper }}
               valueFrom:
                 secretKeyRef:
-                  name: getequity-template
+                  name: getequity-common
                   key: {{ $env }}
             {{- end }}
             {{- range $env := .Values.app.env }}
             - name: {{ $env | upper }}
               valueFrom:
                 secretKeyRef:
-                  name: getequity-merchant
+                  name: getequity-template
                   key: {{ $env }}
             {{- end }}
           livenessProbe:
@@ -65,11 +68,11 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
