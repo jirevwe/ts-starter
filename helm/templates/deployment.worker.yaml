@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gomoney-merchant.fullname" . }}-worker
+  labels:
+    app.kubernetes.io/name: {{ include "gomoney-merchant.name" . }}
+    helm.sh/chart: {{ include "gomoney-merchant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "gomoney-merchant.name" . }}-worker
+      app.kubernetes.io/instance: {{ .Release.Name }}-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "gomoney-merchant.name" . }}-worker
+        app.kubernetes.io/instance: {{ .Release.Name }}-worker
+      annotations:
+        updatedAt: {{ now | quote }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["yarn"]
+          args: ["start:worker"]
+          ports:
+            - name: workerhttp
+              containerPort: {{ .Values.worker.port }}
+              protocol: TCP
+          env:
+            - name: SERVICE_NAME
+              value: {{ .Chart.Name }}-worker
+            - name: NODE_ENV
+              value: {{ .Values.app.node_env }}
+            - name: PORT
+              value: {{ .Values.app.port | quote }}
+            - name: WORKER_PORT
+              value: {{ .Values.worker.port | quote }}
+            {{- range $env := .Values.app.commonEnv }}
+            - name: {{ $env | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: getequity-template
+                  key: {{ $env }}
+            {{- end }}
+            {{- range $env := .Values.app.env }}
+            - name: {{ $env | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: getequity-merchant
+                  key: {{ $env }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: workerhttp
+            initialDelaySeconds: 15
+          resources:
+            {{- toYaml .Values.worker.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

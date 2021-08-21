@@ -19,7 +19,7 @@ jobs:
     env:
       PORT: 10001
       WORKER_PORT: 10011
-      NODE_ENV: development
+      NODE_ENV: staging
       REDIS_URL: redis://localhost:6379
       AMQP_URL: amqp://localhost:5672
       MONGODB_URL: mongodb://localhost:27019/getequity
@@ -61,11 +61,14 @@ jobs:
 
       - name: Push image to DigitalOcean Container Registry
         run: docker push registry.digitalocean.com/getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7)
-      # - name: Update deployment file
-      #   run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|getequity/$SERVICE_NAME:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
-      # - name: Save DigitalOcean kubeconfig with short-lived credentials
-      #   run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 github-actions
-      # - name: Deploy to DigitalOcean Kubernetes
-      #   run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yml
-      # - name: Verify deployment
-      #   run: kubectl rollout status deployment/static-example
+
+      - name: Log in to DigitalOcean again with the access token
+        run: doctl auth init --access-token <DIGITALOCEAN_ACCESS_TOKEN>
+
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
+        run: doctl k8s cluster kubeconfig show $CLUSTER_NAME > .kubeconfig
+
+      - name: Deploy to DigitalOcean Kubernetes
+        run:
+          helm upgrade $SERVICE_NAME --install --kubeconfig=.kubeconfig getequity/$SERVICE_NAME ./helm \
+          --namespace=$NODE_ENV --debug image.repository=$SERVICE_NAME,image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=$NODE_ENV
