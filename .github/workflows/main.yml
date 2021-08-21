@@ -63,9 +63,9 @@ jobs:
         run: docker push registry.digitalocean.com/getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7)
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
-        run: doctl k8s cluster kubeconfig show $CLUSTER_NAME > .kubeconfig
+        run: doctl k8s cluster kubeconfig show ${{ secrets.CLUSTER_NAME }} > .kubeconfig
 
       - name: Deploy to DigitalOcean Kubernetes
         run:
           helm upgrade $SERVICE_NAME --install --kubeconfig=.kubeconfig getequity/$SERVICE_NAME ./helm \
-          --namespace=$NODE_ENV --debug image.repository=$SERVICE_NAME,image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=$NODE_ENV
+          --namespace=${{ env.NODE_ENV }} --debug image.repository=$SERVICE_NAME,image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=${{ env.NODE_ENV }}
