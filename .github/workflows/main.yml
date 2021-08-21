@@ -66,6 +66,4 @@ jobs:
         run: doctl k8s cluster kubeconfig show ${{ secrets.CLUSTER_NAME }} > .kubeconfig
 
       - name: Deploy to DigitalOcean Kubernetes
-        run:
-          helm upgrade ${{ env.SERVICE_NAME }} --install --kubeconfig=.kubeconfig getequity/${{ env.SERVICE_NAME }} ./helm \
-          --namespace=${{ env.NODE_ENV }} --debug image.repository=${{ env.SERVICE_NAME }},image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=${{ env.NODE_ENV }}
+        run: helm --debug upgrade --install ${{ env.SERVICE_NAME }} ./helm --kubeconfig=.kubeconfig --namespace=${{ env.NODE_ENV }} --set image.repository=${{ env.SERVICE_NAME }},image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=${{ env.NODE_ENV }}

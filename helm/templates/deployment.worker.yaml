@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "gomoney-merchant.fullname" . }}-worker
+  name: {{ include "getequity-template.fullname" . }}-worker
   labels:
-    app.kubernetes.io/name: {{ include "gomoney-merchant.name" . }}
-    helm.sh/chart: {{ include "gomoney-merchant.chart" . }}
+    app.kubernetes.io/name: {{ include "getequity-template.name" . }}
+    helm.sh/chart: {{ include "getequity-template.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.worker.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "gomoney-merchant.name" . }}-worker
+      app.kubernetes.io/name: {{ include "getequity-template.name" . }}-worker
       app.kubernetes.io/instance: {{ .Release.Name }}-worker
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "gomoney-merchant.name" . }}-worker
+        app.kubernetes.io/name: {{ include "getequity-template.name" . }}-worker
         app.kubernetes.io/instance: {{ .Release.Name }}-worker
       annotations:
         updatedAt: {{ now | quote }}
