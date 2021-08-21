@@ -49,7 +49,7 @@ jobs:
         run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 
       - name: Build image
-        run: docker build -t registry.digitalocean.com/getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7) .
+        run: docker build -t registry.digitalocean.com/getequity/${{ env.SERVICE_NAME }}:$(echo $GITHUB_SHA | head -c7) .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -60,12 +60,12 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7)
+        run: docker push registry.digitalocean.com/getequity/${{ env.SERVICE_NAME }}:$(echo $GITHUB_SHA | head -c7)
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl k8s cluster kubeconfig show ${{ secrets.CLUSTER_NAME }} > .kubeconfig
 
       - name: Deploy to DigitalOcean Kubernetes
         run:
-          helm upgrade $SERVICE_NAME --install --kubeconfig=.kubeconfig getequity/$SERVICE_NAME ./helm \
-          --namespace=${{ env.NODE_ENV }} --debug image.repository=$SERVICE_NAME,image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=${{ env.NODE_ENV }}
+          helm upgrade ${{ env.SERVICE_NAME }} --install --kubeconfig=.kubeconfig getequity/${{ env.SERVICE_NAME }} ./helm \
+          --namespace=${{ env.NODE_ENV }} --debug image.repository=${{ env.SERVICE_NAME }},image.tag=:$(echo $GITHUB_SHA | head -c7),app.node_env=${{ env.NODE_ENV }}
