@@ -50,7 +50,7 @@ jobs:
         run: yarn test
 
       - name: Update SHA
-        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
+        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 
       - name: Build image
         run: docker build -t getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7) .
