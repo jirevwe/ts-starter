@@ -49,7 +49,7 @@ jobs:
         run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/_meta
 
       - name: Build image
-        run: docker build -t getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7) .
+        run: docker build -t registry.digitalocean.com/getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7) .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -60,7 +60,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7)
+        run: docker push registry.digitalocean.com/getequity/$SERVICE_NAME:$(echo $GITHUB_SHA | head -c7)
       # - name: Update deployment file
       #   run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|getequity/$SERVICE_NAME:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
       # - name: Save DigitalOcean kubeconfig with short-lived credentials
