@@ -1,7 +1,7 @@
 {
   "name": "getequity-template",
   "version": "0.0.0",
-  "description": "Tetequity Template",
+  "description": "GetEquity Template",
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server",
@@ -15,7 +15,7 @@
     "start:worker:debug": "nodemon --inspect ./dist/server/workers/index | bunyan",
     "test": "rm -f logs.json && NODE_ENV=test jest --runInBand --forceExit"
   },
-  "author": "Raymond Tukpe <rtukpe@gmail.com>",
+  "author": "GetEquity LLC",
   "license": "ISC",
   "dependencies": {
     "@random-guys/eventbus": "^2.0.1",
