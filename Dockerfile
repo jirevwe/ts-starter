@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:10 as Base
+FROM mhart/alpine-node:12.22.3 as Base
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN yarn
 
 COPY . .
 
-FROM mhart/alpine-node:10
+FROM mhart/alpine-node:12.22.3
 
 WORKDIR /app
 
