@@ -41,6 +41,8 @@ spec:
               value: {{ .Chart.Name }}-worker
             - name: NODE_ENV
               value: {{ .Values.app.node_env }}
+            - name: PORT
+              value: {{ .Values.app.port | quote }}
             - name: WORKER_PORT
               value: {{ .Values.worker.port | quote }}
             {{- range $env := .Values.app.commonEnv }}
