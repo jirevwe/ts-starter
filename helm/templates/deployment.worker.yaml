@@ -39,10 +39,6 @@ spec:
           env:
             - name: SERVICE_NAME
               value: {{ .Chart.Name }}-worker
-            - name: APP_ENV
-              value: {{ .Values.app.app_env }}
-            - name: NODE_ENV
-              value: {{ .Values.app.node_env }}
             - name: PORT
               value: {{ .Values.app.port | quote }}
             - name: WORKER_PORT
