@@ -4,13 +4,13 @@
   "description": "GetEquity Template",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist/server",
+    "start": "node ./dist/server/index.js",
     "start:dev": "nodemon ./dist/server | bunyan -l debug",
     "start:debug": "nodemon --inspect ./dist/server | bunyan -l debug",
     "watch:tsc": "rm -rf ./dist && tsc --watch -p ./tsconfig.json",
     "build:tsc": "rm -rf ./dist && tsc -p ./tsconfig.json",
     "compile": "tsc",
-    "start:worker": "node ./dist/workers/index",
+    "start:worker": "node ./dist/workers/index.js",
     "start:worker:dev": "nodemon ./dist/workers/index | bunyan",
     "start:worker:debug": "nodemon --inspect ./dist/server/workers/index | bunyan",
     "test": "rm -f logs.json && NODE_ENV=test jest --runInBand --forceExit"
