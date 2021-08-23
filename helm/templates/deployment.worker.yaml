@@ -40,7 +40,7 @@ spec:
             - name: SERVICE_NAME
               value: {{ .Chart.Name }}-worker
             - name: APP_ENV
-              value: {{ .Values.app.node_env }}
+              value: {{ .Values.app.app_env }}
             - name: NODE_ENV
               value: {{ .Values.app.node_env }}
             - name: PORT
