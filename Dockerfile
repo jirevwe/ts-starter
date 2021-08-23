@@ -16,4 +16,6 @@ WORKDIR /app
 
 COPY --from=Base /app .
 
+RUN yarn build:tsc
+
 CMD [ "yarn", "start" ]
