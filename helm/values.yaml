@@ -11,8 +11,8 @@ image:
 
 imagePullSecrets:
   - name: getequity
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 service:
   type: ClusterIP
@@ -33,6 +33,8 @@ app:
   port: 80
   # Shared environment variables
   commonEnv:
+    - app_env
+    - node_env
     - amqp_url
     - redis_url
     - redis_password

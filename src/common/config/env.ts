@@ -28,6 +28,20 @@ if (['production', 'staging'].includes(process.env.NODE_ENV))
 else requiredVariables.push('mongodb_url');
 
 const env = {
+  /**
+   * NodeJS runtime environment. See here https://stackoverflow.com/a/16979503
+   * Possible values are "development" and "production".
+   *
+   * DON'T SET THIS MANUALLY
+   */
+  node_env: process.env.NODE_ENV || 'development',
+
+  /**
+   * This application's runtime environment
+   * Possible values are "development", "test", "production", "staging"
+   */
+  app_env: process.env.APP_ENV || 'development',
+
   port: Number(process.env.PORT),
   worker_port: process.env.WORKER_PORT,
   api_version: process.env.API_VERSION || '/api/v1',
@@ -37,7 +51,6 @@ const env = {
   redis_url: process.env.REDIS_URL,
   mongodb_url: process.env.MONGODB_URL,
 
-  app_env: process.env.NODE_ENV || 'development',
   service_name: process.env.SERVICE_NAME || 'getequity-template',
   gateman_key: process.env.GATEMAN_KEY,
 

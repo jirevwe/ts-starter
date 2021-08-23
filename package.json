@@ -13,7 +13,7 @@
     "start:worker": "node ./dist/workers/index.js",
     "start:worker:dev": "nodemon ./dist/workers/index | bunyan",
     "start:worker:debug": "nodemon --inspect ./dist/server/workers/index | bunyan",
-    "test": "rm -f logs.json && NODE_ENV=test jest --runInBand --forceExit"
+    "test": "rm -f logs.json && APP_ENV=test jest --runInBand --forceExit"
   },
   "author": "GetEquity LLC",
   "license": "ISC",

@@ -39,6 +39,8 @@ spec:
               value: {{ .Chart.Name }}
             - name: APP_ENV
               value: {{ .Values.app.app_env }}
+            - name: NODE_ENV
+              value: {{ .Values.app.node_env }}
             - name: PORT
               value: {{ .Values.app.port | quote }}
             {{- range $env := .Values.app.commonEnv }}

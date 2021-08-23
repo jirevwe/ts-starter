@@ -19,7 +19,8 @@ jobs:
     env:
       PORT: 10001
       WORKER_PORT: 10011
-      NODE_ENV: staging
+      APP_ENV: staging
+      NODE_ENV: development
       REDIS_URL: redis://localhost:6379
       AMQP_URL: amqp://localhost:5672
       MONGODB_URL: mongodb://localhost:27019/getequity
@@ -67,4 +68,4 @@ jobs:
         run: doctl k8s cluster kubeconfig show ${{ secrets.CLUSTER_NAME }} > .kubeconfig
 
       - name: Deploy to DigitalOcean Kubernetes
-        run: helm --debug upgrade --install $SERVICE_NAME ./helm --kubeconfig=.kubeconfig --namespace=$NODE_ENV --set image.repository=$REPOSITORY/$SERVICE_NAME,image.tag=$(echo $GITHUB_SHA | head -c7),app.node_env=$NODE_ENV
+        run: helm --debug upgrade --install $SERVICE_NAME ./helm --kubeconfig=.kubeconfig --namespace=$APP_ENV --set image.repository=$REPOSITORY/$SERVICE_NAME,image.tag=$(echo $GITHUB_SHA | head -c7)
