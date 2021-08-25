@@ -1,0 +1,49 @@
+name: Build and Test Feature Branches
+
+on:
+  push:
+    branches-ignore:
+      - dev
+      - master
+
+  pull_request:
+    branches-ignore:
+      - dev
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PORT: 10001
+      WORKER_PORT: 10011
+      APP_ENV: staging
+      NODE_ENV: development
+      REDIS_URL: redis://localhost:6379
+      AMQP_URL: amqp://localhost:5672
+      MONGODB_URL: mongodb://localhost:27019/getequity
+      REDIS_KEY: 4844e2650b69fd92f0af204275ca74b9
+      REDIS_PASSWORD: ATMHEvZZNe
+      NIP_SERVICE_URL: http://127.0.0.1:5001
+      NIP_SERVICE_API_VERSION: /api/v1
+      GATEMAN_KEY: 4844e2650b69fd92f0af204275ca74b9
+      IOS_BUILD_NUMBER: 20210508005947,1.3.5
+      ANDROID_BUILD_NUMBER: 12000,0.12.0
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12"
+          cache: "yarn"
+
+      - name: Get Repository Name
+        run: echo "SERVICE_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests
+        run: yarn test
